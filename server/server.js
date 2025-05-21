@@ -9,6 +9,7 @@ import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import addressRouter from "./routes/addressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import helmet from "helmet";
 import "dotenv/config"
 
 const app = express();
@@ -21,6 +22,7 @@ await connectCloudinary();
 const allowedOrigins = ["http://localhost:5173", "https://greencart-inky.vercel.app"]
 
 // Middleware configuration
+app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({origin: allowedOrigins, credentials: true}))

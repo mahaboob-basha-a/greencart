@@ -15,13 +15,14 @@ const SellerLogin = () => {
     const onSubmitHandler = async (e)=>{
         try {
             e.preventDefault();
-            const {data} = await axiosReq.post('/api/seller/login',{email,password})
-            if(data.success){
-                toast.success(data.message)
+            const res = await axiosReq.post('/api/seller/login',{email,password})
+            // prevent bypass attacks for admin login
+            if(res.data.success && res.status === 200 && email === import.meta.env.VITE_SELLER_EMAIL && password === import.meta.env.VITE_SELLER_PASSWORD){
+                toast.success(res.data.message)
                 dispatch(setIsSeller(true));
                 navigate("/seller");
             }else{
-                toast.error(data.message);
+                toast.error(res.data.message);
             }
             
         } catch (error) {

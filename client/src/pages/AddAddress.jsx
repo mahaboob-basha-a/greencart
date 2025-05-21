@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useSelector } from 'react-redux'
-import { assets } from '../assets/assets'
-import { useNavigate } from 'react-router-dom'
-import { axiosReq } from '../context/appReducer'
-
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import { assets } from '../assets/assets';
+import { useNavigate } from 'react-router-dom';
+import { axiosReq } from '../context/appReducer';
 
 const InputField = ({type,placeholder,name ,handleChange,address})=>{
    return (<input type={type} placeholder={placeholder} onChange={handleChange} name={name} value={address[name]} required className='w-full px-2 py-2.5 border border-gray-500/30 rounded outline-none text-gray-500 focus:border-primary transition' />)
@@ -26,14 +25,38 @@ const AddAddress = () => {
     const {user} = useSelector(({store})=> store);
     const navigate = useNavigate();
 
-    const handleChange = e =>{
-        const {name,value} = e.target;
+    const hasXSS = (input) => {
+    const xssPatterns = [
+            /<script/i,
+            /<\/script/i,     
+            /javascript:/i,    
+            /onerror=/i,      
+            /onload=/i,       
+            /onclick=/i,      
+            /eval\(/i,        
+            /fromCharCode\(/i, 
+            /<\/?iframe/i,    
+            /<\/?style/i,     
+            /url\(/i,         
+            /data:/i       
+        ];
+  return xssPatterns.some(pattern => pattern.test(input));
+};
 
-        setAddress(prev=>({
-            ...prev,
-            [name]:value
-        }))
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  
+    if (hasXSS(value)) {
+        toast.error("Invalid characters detected");
+        e.target.value = "";
+        return false;
     }
+
+    setAddress(prev=>({
+        ...prev,
+        [name]:value
+    }))
+}
 
     const onSubmitHandler = async(e)=>{
         try {
@@ -42,6 +65,15 @@ const AddAddress = () => {
 
             if(data.success){
                 toast.success(data.message)
+                   setAddress({firstName: "",
+                        lastName: "",
+                        email: "",
+                        street: "",
+                        city: "",
+                        state: "",
+                        zipcode: "",
+                        country: "",
+                        phone: ""})
                 navigate('/cart')
             }else{
                 toast.error(data.message);
