@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/ProductCard';
 import { useSelector } from 'react-redux';
+import Loader from '../components/Loader';
 
 const AllProducts = () => {
     const {products,searchQuery} = useSelector(({store})=>store);
@@ -22,11 +23,11 @@ const AllProducts = () => {
             <div className='w-16 h-0.5 bg-primary rounded-full'></div>
         </div>
 
-        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:grid-cols-5 mt-6'>
+        {products.length > 0 ?<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:grid-cols-5 mt-6'>
             {filteredProducts.filter(product=> product.inStock).map((product,index)=>(
                 <ProductCard key={index} product={product} />
             ))}
-        </div>
+        </div> : <Loader />}
     </div>
   )
 }

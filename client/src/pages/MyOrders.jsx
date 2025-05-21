@@ -2,20 +2,24 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
 import { axiosReq } from '../context/appReducer'
+import Loader from '../components/Loader'
 
 const MyOrders = () => {
 
     const [myOrders,setMyOrders] = useState([])
-
+    const [loader,setLoader] = useState(false)
     const {currency} = useSelector(({store})=> store)
 
     const fetchMyOrders = async()=>{
         try {
+            setLoader(true)
             const {data} = await axiosReq.get('/api/order/user')
+            setLoader(false)
             if(data.success){
                 setMyOrders(data.orders)
             }
         } catch (error) {
+            setLoader(false)
             toast.error(error.message)
         }
     }
@@ -30,7 +34,8 @@ const MyOrders = () => {
             <p className='text-2xl font-medium uppercase'>My orders</p>
             <div className='w-16 h-0.5 bg-primary rounded-full'></div>
         </div>
-        {myOrders.map((order,index)=>(
+        {loader && <Loader />}
+        {!loader && myOrders.length > 0 ? myOrders.map((order,index)=>(
             <div key={index} className='border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl'>
                 <p className='flex justify-between md:items-center text-gray-400 md:font-medium max-md:flex-col'>
                     <span>OrderId : {order?._id}</span>
@@ -63,7 +68,7 @@ const MyOrders = () => {
                     </div>
                 ))}
             </div>
-        ))}
+        )) : (<h1 className='text-lg text-center'>No orders available.</h1>)}
     </div>
   )
 }

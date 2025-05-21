@@ -4,6 +4,7 @@ import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { axiosReq, loadRazorpayScript, removeFromCart, setCartItems, updateCartItem } from "../context/appReducer";
+import Loader from "../components/Loader";
 
 const Cart = () => {
     const [showAddress, setShowAddress] = useState(false)
@@ -259,7 +260,7 @@ const Cart = () => {
                 </button>
             </div>
         </div>
-    ) : null
+    ) : <Loader />
 }
 
 export default Cart;

@@ -6,8 +6,6 @@ import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 
 const SellerLayout = () => {
     const navigate = useNavigate();
-
-
     const sidebarLinks = [
         { name: "Add Product", path: "/seller", icon: assets.add_icon },
         { name: "Product List", path: "/seller/product-list", icon: assets.product_list_icon },
